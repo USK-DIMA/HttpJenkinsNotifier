@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap-grid.min.css"/>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap-reboot.min.css"/>
+    <link rel="stylesheet" href="/css/index.css"/>
+    <title>Jenkins Notifier</title>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="#">Jenkins Notifier</a>
+</nav>
+
+
+<div class="container">
+    <div class="card-deck mb-3 text-center">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Pull Request</h4>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-lg btn-block btn-dark" event-type="pull_request">Pull Request</button>
+            </div>
+        </div>
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Build Success</h4>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-lg btn-block btn-success" event-type="build_success">Build Success</button>
+            </div>
+        </div>
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Approve</h4>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-lg btn-block btn-primary" event-type="approve">Approve</button>
+            </div>
+        </div>
+    </div>
+    <div class="card-deck mb-3 text-center">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Merge</h4>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-lg btn-block btn-info" event-type="merge">Merge</button>
+            </div>
+        </div>
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Build Fail</h4>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-lg btn-block btn-danger" event-type="build_failed">Build Fail</button>
+            </div>
+        </div>
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">Need Work</h4>
+            </div>
+            <div class="card-body">
+                <button type="button" class="btn btn-lg btn-block btn-warning" event-type="need_work">Need Work</button>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="pt-4 my-md-5 pt-md-5 border-top">
+</footer>
+</div>
+<!--<main role="main" class="container">
+
+    <div class="starter-template">
+        <h1>Bootstrap starter template</h1>
+        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a
+            mostly barebones HTML document.</p>
+    </div>
+
+</main>&lt;!&ndash; /.container &ndash;&gt;-->
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/bootstrap/js/jquery-3.3.1.min.js"></script>
+<script src="/bootstrap/js/bootstrap.bundle.js"></script>
+<script src="/bootstrap/js/bootstrap.js"></script>
+<script src="/js/index.js"></script>
+</body>
+</html>
