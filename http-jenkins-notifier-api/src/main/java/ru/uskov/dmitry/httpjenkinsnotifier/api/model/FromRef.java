@@ -1,5 +1,5 @@
 
-package ru.uskov.dmitry.httpjenkinsnotifier.rest.model;
+package ru.uskov.dmitry.httpjenkinsnotifier.api.model;
 
 import java.io.Serializable;
 import java.util.HashMap;

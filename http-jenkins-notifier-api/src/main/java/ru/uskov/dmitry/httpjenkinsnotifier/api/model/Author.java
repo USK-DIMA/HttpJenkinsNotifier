@@ -1,19 +1,18 @@
 
-package ru.uskov.dmitry.httpjenkinsnotifier.rest.model;
+package ru.uskov.dmitry.httpjenkinsnotifier.api.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Reviewer implements Serializable {
+public class Author implements Serializable {
 
     private User user;
-    private String lastReviewedCommit;
     private String role;
     private Boolean approved;
     private String status;
     private Map<String, Object> additionalProperties = new HashMap<>();
-    private final static long serialVersionUID = -4280338965145463119L;
+    private final static long serialVersionUID = -6155373938012008059L;
 
     public User getUser() {
         return user;
@@ -21,14 +20,6 @@ public class Reviewer implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public String getLastReviewedCommit() {
-        return lastReviewedCommit;
-    }
-
-    public void setLastReviewedCommit(String lastReviewedCommit) {
-        this.lastReviewedCommit = lastReviewedCommit;
     }
 
     public String getRole() {

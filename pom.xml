@@ -6,7 +6,13 @@
 
     <groupId>ru.uskov.dmitry</groupId>
     <artifactId>http-jenkins-notifier</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>http-jenkins-notifier-server</module>
+        <module>http-jenkins-notifier-client</module>
+        <module>http-jenkins-notifier-api</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -1,11 +1,11 @@
 
-package ru.uskov.dmitry.httpjenkinsnotifier.rest.model;
+package ru.uskov.dmitry.httpjenkinsnotifier.api.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Actor implements Serializable {
+public class User implements Serializable {
 
     private String name;
     private String emailAddress;
@@ -14,8 +14,8 @@ public class Actor implements Serializable {
     private Boolean active;
     private String slug;
     private String type;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-    private final static long serialVersionUID = -9167045323295013865L;
+    private Map<String, Object> additionalProperties = new HashMap<>();
+    private final static long serialVersionUID = -7490427783494312387L;
 
     public String getName() {
         return name;
