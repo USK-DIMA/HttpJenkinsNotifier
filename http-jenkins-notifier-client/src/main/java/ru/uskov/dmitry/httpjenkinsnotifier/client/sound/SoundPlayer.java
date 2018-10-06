@@ -2,6 +2,8 @@ package ru.uskov.dmitry.httpjenkinsnotifier.client.sound;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -20,12 +22,12 @@ public class SoundPlayer implements AutoCloseable {
     private FloatControl volumeControl = null;
     private boolean playing = false;
 
-    public SoundPlayer(File f) {
+    public SoundPlayer(File f, SoundPlayer nextPlayer) {
         try {
             stream = AudioSystem.getAudioInputStream(f);
             clip = AudioSystem.getClip();
             clip.open(stream);
-            clip.addLineListener(new Listener());
+            clip.addLineListener(new Listener(nextPlayer));
             volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
             released = true;
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException exc) {
@@ -124,34 +126,32 @@ public class SoundPlayer implements AutoCloseable {
         return (v - min) / (max - min);
     }
 
-    /**
-     * Дожидается окончания проигрывания звука
-     */
-    public void join() {
-        if (!released) return;
-        synchronized (clip) {
-            try {
-                while (playing)
-                    clip.wait();
-            } catch (InterruptedException exc) {
-            }
-        }
+    public static SoundPlayer playSound(String path) {
+        return playSound(Collections.singletonList(path));
     }
 
-
-    public static SoundPlayer playSound(String path) {
-        File f = new File(path);
-        SoundPlayer snd = new SoundPlayer(f);
-        snd.play();
-        return snd;
+    public static SoundPlayer playSound(List<String> paths) {
+        SoundPlayer before = null;
+        for (int i = paths.size() - 1; i >= 0; i--) {
+            before = new SoundPlayer(new File(paths.get(i)), before);
+        }
+        if (before != null) {
+            before.play();
+        }
+        return before;
     }
 
     private class Listener implements LineListener {
+        private final SoundPlayer soundPlayer;
+
+        public Listener(SoundPlayer soundPlayer) {
+            this.soundPlayer = soundPlayer;
+        }
+
         public void update(LineEvent ev) {
             if (ev.getType() == LineEvent.Type.STOP) {
-                playing = false;
-                synchronized (clip) {
-                    clip.notify();
+                if (soundPlayer != null) {
+                    soundPlayer.play();
                 }
             }
         }
