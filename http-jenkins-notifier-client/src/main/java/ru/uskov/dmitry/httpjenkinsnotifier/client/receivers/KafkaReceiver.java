@@ -27,6 +27,9 @@ public class KafkaReceiver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaReceiver.class);
 
+    @Value("${kafka.disable:false}")
+    private boolean disable;
+
     @Value("${kafka.brokers:localhost:9092}")
     private String kafkaBrokers;
 
@@ -48,6 +51,10 @@ public class KafkaReceiver {
 
     @PostConstruct
     public void init() {
+        if(disable) {
+            LOGGER.info("kafka.disable=false. Kafka consumer not started");
+            return;
+        }
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
