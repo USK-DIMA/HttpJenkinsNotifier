@@ -91,7 +91,7 @@ public class KafkaReceiver {
                     if (!consumerRecords.isEmpty()) {
                         consumerRecords.forEach(record -> {
                             LOGGER.debug("Receive message: {}", record.value());
-                            soundNotificationService.notify(SoundNotificationService.EventType.PULL_REQUEST);
+                            //soundNotificationService.notify(SoundNotificationService.EventType.);
                         });
                         consumer.commitSync();
                     }

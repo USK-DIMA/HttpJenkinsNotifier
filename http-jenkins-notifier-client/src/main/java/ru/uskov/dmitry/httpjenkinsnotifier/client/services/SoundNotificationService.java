@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 import ru.uskov.dmitry.httpjenkinsnotifier.client.sound.DigitsSoundUtils;
 import ru.uskov.dmitry.httpjenkinsnotifier.client.sound.SoundPlayer;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,48 +19,84 @@ public class SoundNotificationService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SoundNotificationService.class);
 
-    private static final String DIGITS_PATH = "digits";
+    private static final String NOTE_FOLDER = "note";
+    private static final String DIGITS_FOLDER = "digits";
+    private static final String COMMON_FOLDER = "common";
+    private static final String EVENTS_FOLDER = "events";
+    private static final String TICKET_OR_PR_FOLDER = "ticketOrPr";
 
     @Value("${audio.path}")
     private String audioPath;
 
-    public void notify(EventType eventType) {
-        try {
-            SoundPlayer.playSound(resolve(eventType.getAudioName()));
-        } catch (Exception e) {
-            LOGGER.error("Could not play sound for event {}", eventType, e);
+    private EventType eventType = EventType.NOTE;
+
+    private IdFormat idFormat = IdFormat.CLASSIC;
+
+    public void notify(EventNotification eventNotification) {
+        if(eventType == EventType.NOTE) {
+            SoundPlayer.playSound(getNoteAudio(eventNotification));
+        } else {
+            List<String> tracks = new ArrayList<>();
+            tracks.add(getNotificationAudio());
+            tracks.addAll(getTicketOrPr(eventNotification));
+            tracks.add(getAudioNumber());
+            tracks.addAll(getId(eventNotification.getId(), idFormat.getIdToAudiosFilesConverter()));
+            tracks.add(getEventTypeAudio(eventNotification));
+            SoundPlayer.playSound(tracks);
         }
     }
 
-    private String resolve(String audioName) {
-        return Paths.get(audioPath).resolve(audioName).toString();
+    private String getNoteAudio(EventNotification eventNotification) {
+        return resolve(NOTE_FOLDER, eventNotification.getEventType().getAudioNameNote());
     }
 
-    public void notifyNumber(String number) {
-        Path digitsPath = Paths.get(audioPath).resolve(DIGITS_PATH);
-        ArrayList<String> tracks1 = DigitsSoundUtils.getTracksClassic(number);
-        System.out.println(tracks1);
-        List<String> tracks = tracks1.stream().map(audioName -> digitsPath.resolve(audioName).toString()).collect(Collectors.toList());
-        SoundPlayer.playSound(tracks);
+    private String getEventTypeAudio(EventNotification eventNotification) {
+        return resolve(EVENTS_FOLDER, eventNotification.getEventType().getAudioNameEvent());
+    }
+
+    private Collection<? extends String> getTicketOrPr(EventNotification eventNotification) {
+        return resolve(TICKET_OR_PR_FOLDER, eventNotification.getTicketOrPullRequest().getAudioName());
+    }
+
+    private List<String> getId(String number, Function<String, ArrayList<String>> numberToAudiosFilesConverter) {
+        ArrayList<String> tracks1 = numberToAudiosFilesConverter.apply(number);
+        return resolve(DIGITS_FOLDER, tracks1);
+    }
+
+    private String getAudioNumber() {
+        return resolve(COMMON_FOLDER, "number.wav");
+    }
+
+    private String getNotificationAudio() {
+        return resolve(COMMON_FOLDER, "notification.wav");
+    }
+
+    private String resolve(String folder, String audioName) {
+        return Paths.get(audioPath).resolve(folder).resolve(audioName).toString();
+    }
+
+    private List<String> resolve(String folder, List<String> audioName) {
+        return audioName.stream().map(a->resolve(folder, a)).collect(Collectors.toList());
     }
 
     public enum EventType {
-        PULL_REQUEST("pull_request.wav"),
-        APPROVE("approve.wav"),
-        NEED_WORK("need_work.wav"),
-        BUILD_SUCCESS("build_success.wav"),
-        BUILD_FAILED("build_failed.wav"),
-        MERGE("merge.wav");
+        NOTE,
+        FULL
+    }
 
-        private final String audioName;
+    public enum IdFormat {
+        CLASSIC(DigitsSoundUtils::getTracksClassic),
+        SPLIT(DigitsSoundUtils::getTracksSplit);
+        private final Function<String, ArrayList<String>> numberToAudiosFilesConverter;
 
-        EventType(String audioName) {
-            this.audioName = audioName;
+        IdFormat(Function<String, ArrayList<String>> numberToAudiosFilesConverter) {
+            this.numberToAudiosFilesConverter = numberToAudiosFilesConverter;
         }
 
-        public String getAudioName() {
-            return audioName;
+        public Function<String, ArrayList<String>> getIdToAudiosFilesConverter() {
+            return numberToAudiosFilesConverter;
         }
+
     }
 
 }
